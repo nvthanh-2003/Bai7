@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Lập Trình Cơ Bản</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        .exercise-container {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="exercise-container">
+    <h2>Bài 1: Tính tổng và trung bình điểm số</h2>
+    <p>Nhập điểm Vật lý, Hóa học, Sinh học để tính tổng và trung bình.</p>
+    <button onclick="bai1_tinhDiem()">Chạy Bài 1</button>
+</div>
+
+<div class="exercise-container">
+    <h2>Bài 2: Chuyển đổi nhiệt độ C sang F</h2>
+    <p>Nhập giá trị độ C, chương trình sẽ chuyển đổi sang độ F.</p>
+    <button onclick="bai2_doiNhietDo()">Chạy Bài 2</button>
+</div>
+
+<div class="exercise-container">
+    <h2>Bài 3: Tính diện tích hình tròn</h2>
+    <p>Nhập bán kính (r) để tính diện tích hình tròn ($A = \pi r^2$).</p>
+    <button onclick="bai3_tinhDienTich()">Chạy Bài 3</button>
+</div>
+
+<div class="exercise-container">
+    <h2>Bài 4: Tính chu vi hình tròn</h2>
+    <p>Nhập bán kính (r) để tính chu vi hình tròn ($C = 2\pi r$).</p>
+    <button onclick="bai4_tinhChuVi()">Chạy Bài 4</button>
+</div>
+
+<script>
+    // --- MÃ JAVASCRIPT CHO CÁC BÀI TẬP ---
+
+    // BÀI TẬP 1: Tính tổng và trung bình điểm số
+    function bai1_tinhDiem() {
+        console.log("--- Bài 1: Tính tổng và trung bình điểm số ---");
+
+        // Sử dụng prompt để lấy input từ người dùng
+        const ly = parseFloat(prompt("Nhập điểm Vật lý:"));
+        const hoa = parseFloat(prompt("Nhập điểm Hóa học:"));
+        const sinh = parseFloat(prompt("Nhập điểm Sinh học:"));
+
+        if (isNaN(ly) || isNaN(hoa) || isNaN(sinh)) {
+            alert("Lỗi: Vui lòng nhập số hợp lệ.");
+            return;
+        }
+
+        const tongDiem = ly + hoa + sinh;
+        const diemTrungBinh = tongDiem / 3;
+
+        const ketQua =
+            `Tổng điểm: ${tongDiem.toFixed(2)}\n` +
+            `Điểm trung bình: ${diemTrungBinh.toFixed(2)}`;
+
+        alert("Kết quả Bài 1:\n" + ketQua);
+        console.log(ketQua);
+    }
+
+    // BÀI TẬP 2: Chuyển đổi nhiệt độ C sang F
+    function bai2_doiNhietDo() {
+        console.log("--- Bài 2: Chuyển đổi nhiệt độ C sang F ---");
+
+        const celsius = parseFloat(prompt("Nhập nhiệt độ (độ C):"));
+
+        if (isNaN(celsius)) {
+            alert("Lỗi: Vui lòng nhập số hợp lệ.");
+            return;
+        }
+
+        // Công thức: F = C * (9/5) + 32
+        const fahrenheit = (celsius * 9 / 5) + 32;
+
+        const ketQua = `${celsius.toFixed(2)} độ C tương đương với ${fahrenheit.toFixed(2)} độ F.`;
+
+        alert("Kết quả Bài 2:\n" + ketQua);
+        console.log(ketQua);
+    }
+
+    // BÀI TẬP 3: Tính diện tích hình tròn
+    function bai3_tinhDienTich() {
+        console.log("--- Bài 3: Tính diện tích hình tròn ---");
+
+        const banKinh = parseFloat(prompt("Nhập bán kính hình tròn (r):"));
+
+        if (isNaN(banKinh) || banKinh < 0) {
+            alert("Lỗi: Bán kính phải là một số không âm hợp lệ.");
+            return;
+        }
+
+        // Công thức: Diện tích A = pi * r^2
+        const PI = Math.PI;
+        const dienTich = PI * (banKinh ** 2);
+
+        const ketQua = `Diện tích hình tròn là: ${dienTich.toFixed(2)}`;
+
+        alert("Kết quả Bài 3:\n" + ketQua);
+        console.log(ketQua);
+    }
+
+    // BÀI TẬP 4: Tính chu vi hình tròn
+    function bai4_tinhChuVi() {
+        console.log("--- Bài 4: Tính chu vi hình tròn ---");
+
+        const banKinh = parseFloat(prompt("Nhập bán kính hình tròn (r):"));
+
+        if (isNaN(banKinh) || banKinh < 0) {
+            alert("Lỗi: Bán kính phải là một số không âm hợp lệ.");
+            return;
+        }
+
+        // Công thức: Chu vi C = 2 * pi * r
+        const chuVi = 2 * Math.PI * banKinh;
+
+        const ketQua = `Chu vi hình tròn là: ${chuVi.toFixed(2)}`;
+
+        alert("Kết quả Bài 4:\n" + ketQua);
+        console.log(ketQua);
+    }
+</script>
+</body>
+</html>

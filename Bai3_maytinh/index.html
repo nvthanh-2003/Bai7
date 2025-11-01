@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Calculator - New Custom Layout</title>
+    <style>
+        /* CSS cho giao diện */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e0e0e0;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            width: 300px; /* Chiều rộng cố định */
+        }
+
+        .display {
+            background-color: #dcdcdc;
+            color: #333;
+            font-size: 2.5em;
+            text-align: right;
+            padding: 15px 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: nowrap;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 cột bằng nhau */
+            gap: 10px;
+        }
+
+        .button {
+            background-color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 0;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s, box-shadow 0.2s;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: #e6e6e6;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Định kiểu theo màu sắc trong ảnh */
+        .button.operator {
+            background-color: #aaddff; /* Màu xanh nhạt */
+            color: #007bff;
+        }
+        .button.equal {
+            background-color: #6a5acd; /* Màu tím */
+            color: white;
+            grid-column: span 2; /* Chiếm 2 cột */
+        }
+        .button.clear {
+            background-color: #ffcccc; /* Màu đỏ nhạt */
+            color: #dc3545;
+        }
+        .button.function {
+            background-color: #e8e8e8; /* Màu xám */
+            color: #444;
+        }
+
+        /* Nút cộng màu xanh */
+        .button.add {
+            background-color: #aaddff;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <div class="display" id="display">0</div>
+
+    <div class="buttons-grid">
+
+        <button class="button function">Rad</button>
+        <button class="button function">x!</button>
+        <button class="button function">(</button>
+        <button class="button function">)</button>
+
+        <button class="button function">Inv</button>
+        <button class="button function">sin</button>
+        <button class="button">7</button>
+        <button class="button">8</button>
+
+        <button class="button">9</button>
+        <button class="button operator">+</button>
+        <button class="button function">cos</button>
+        <button class="button function">log</button>
+
+        <button class="button">4</button>
+        <button class="button">5</button>
+        <button class="button">6</button>
+        <button class="button operator">x</button>
+
+        <button class="button function">e</button>
+        <button class="button function">tan</button>
+        <button class="button function">√</button>
+        <button class="button">1</button>
+
+        <button class="button">2</button>
+        <button class="button">3</button>
+        <button class="button operator">-</button>
+        <button class="button function">Ans</button>
+
+        <button class="button function">EXP</button>
+        <button class="button function">x²</button>
+        <button class="button">0</button>
+        <button class="button function">%</button>
+
+        <button class="button clear">AC</button>
+        <button class="button equal" onclick="calculateResult()">=</button>
+        <button class="button add">+</button> </div>
+</div>
+
+<script>
+    const display = document.getElementById('display');
+    let currentInput = '0';
+    let operator = null;
+    let previousInput = null;
+    let waitingForNewInput = false;
+
+    function updateDisplay() {
+        display.textContent = currentInput;
+    }
+
+    function appendNumber(number) {
+        if (waitingForNewInput) {
+            currentInput = number;
+            waitingForNewInput = false;
+        } else {
+            if (currentInput === '0' && number !== '.') {
+                currentInput = number;
+            } else {
+                currentInput += number;
+            }
+        }
+        updateDisplay();
+    }
+
+    function chooseOperator(op) {
+        if (currentInput === '0' && op === '-') {
+            currentInput = '-';
+            waitingForNewInput = false;
+            updateDisplay();
+            return;
+        }
+        if (operator && !waitingForNewInput) {
+            calculateResult();
+        }
+        if (previousInput === null) {
+            previousInput = parseFloat(currentInput);
+        }
+
+        operator = op;
+        waitingForNewInput = true;
+        updateDisplay();
+    }
+
+    function calculateResult() {
+        if (operator === null || previousInput === null || waitingForNewInput) {
+            return;
+        }
+
+        const current = parseFloat(currentInput);
+        let result = 0;
+
+        switch (operator) {
+            case '+':
+                result = previousInput + current;
+                break;
+            case '-':
+                result = previousInput - current;
+                break;
+            case 'x':
+                result = previousInput * current;
+                break;
+            case '/':
+                if (current === 0) {
+                    display.textContent = 'Error';
+                    currentInput = '0';
+                    previousInput = null;
+                    operator = null;
+                    waitingForNewInput = false;
+                    return;
+                }
+                result = previousInput / current;
+                break;
+            default:
+                return;
+        }
+
+        // Làm tròn kết quả để tránh lỗi dấu phẩy động
+        currentInput = result.toFixed(10).replace(/\.?0+$/, "");
+        operator = null;
+        previousInput = null;
+        waitingForNewInput = true;
+        updateDisplay();
+    }
+
+    function clearDisplay() {
+        currentInput = '0';
+        operator = null;
+        previousInput = null;
+        waitingForNewInput = false;
+        updateDisplay();
+    }
+
+    // Gán sự kiện click cho tất cả các nút
+    document.querySelectorAll('.button').forEach(button => {
+        button.addEventListener('click', () => {
+            const buttonText = button.textContent;
+
+            if (!isNaN(parseFloat(buttonText)) || buttonText === '.') {
+                appendNumber(buttonText);
+            } else if (['+', '-', 'x', '/'].includes(buttonText)) {
+                chooseOperator(buttonText);
+            } else if (buttonText === 'AC') {
+                clearDisplay();
+            } else if (buttonText === '=') {
+                calculateResult();
+            } else {
+                // Xử lý các nút chức năng khoa học (hiện tại chỉ in ra console)
+                console.log(`Chức năng ${buttonText} được nhấn.`);
+            }
+        });
+    });
+
+    updateDisplay();
+</script>
+
+</body>
+</html>

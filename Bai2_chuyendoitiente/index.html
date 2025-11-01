@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng Dụng Chuyển Đổi Tiền Tệ</title>
+    <style>
+        /* CSS để tạo giao diện */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .converter-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end; /* Căn chỉnh nút Convert xuống dưới cùng */
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .input-item {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Cho phép các input chiếm không gian bằng nhau */
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 0.9em;
+        }
+        input[type="number"], select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng tổng thể */
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #6a5acd; /* Màu tím theo ảnh minh họa */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            height: 40px; /* Căn chỉnh với chiều cao của input/select */
+        }
+        button:hover {
+            background-color: #5345b1;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 10px 0;
+        }
+        .result-box label {
+            font-size: 1.1em;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .result-box span {
+            font-size: 1.5em;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="converter-container">
+    <h1>Ứng Dụng Chuyển Đổi Tiền Tệ</h1>
+
+    <div class="input-group">
+        <div class="input-item">
+            <label for="amount">Amount</label>
+            <input type="number" id="amount" value="1" min="0" step="0.01">
+        </div>
+
+        <div class="input-item">
+            <label for="fromCurrency">From Currency</label>
+            <select id="fromCurrency">
+                <option value="VND" selected>Việt Nam Đồng (VND)</option>
+                <option value="USD">Đô la Mỹ (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+            </select>
+        </div>
+
+        <div class="input-item">
+            <label for="toCurrency">To Currency</label>
+            <select id="toCurrency">
+                <option value="USD" selected>Đô la Mỹ (USD)</option>
+                <option value="VND">Việt Nam Đồng (VND)</option>
+                <option value="EUR">Euro (EUR)</option>
+            </select>
+        </div>
+
+        <button onclick="convertCurrency()">Convert</button>
+    </div>
+
+    <div class="result-box">
+        <label>Result:</label>
+        <span id="result">0.00 VND</span>
+    </div>
+</div>
+
+<script>
+    // --- MÃ JAVASCRIPT XỬ LÝ CHUYỂN ĐỔI ---
+
+    // Bảng tỉ giá cố định (Tỉ giá tham khảo, không phải thời gian thực)
+    // Đây là tỉ giá cơ sở so với 1 USD
+    const exchangeRates = {
+        'VND': 25450,   // 1 USD = 25,450 VND
+        'USD': 1,       // 1 USD = 1 USD
+        'EUR': 0.93     // 1 USD = 0.93 EUR
+    };
+
+    function convertCurrency() {
+        // Lấy giá trị từ các trường nhập liệu
+        const amount = parseFloat(document.getElementById('amount').value);
+        const from = document.getElementById('fromCurrency').value;
+        const to = document.getElementById('toCurrency').value;
+        const resultElement = document.getElementById('result');
+
+        // Kiểm tra đầu vào hợp lệ
+        if (isNaN(amount) || amount <= 0) {
+            resultElement.textContent = 'Vui lòng nhập số tiền hợp lệ.';
+            resultElement.style.color = 'red';
+            return;
+        }
+
+        resultElement.style.color = '#007bff'; // Đặt lại màu mặc định
+
+        // 1. Chuyển đổi số tiền gốc sang USD (tiền tệ cơ sở)
+        // Ví dụ: 100 VND / 25450 = 0.0039 USD
+        const amountInUSD = amount / exchangeRates[from];
+
+        // 2. Chuyển đổi từ USD sang tiền tệ đích
+        // Ví dụ: 0.0039 USD * 0.93 (tỉ giá EUR/USD) = 0.0036 EUR
+        const convertedAmount = amountInUSD * exchangeRates[to];
+
+        // 3. Hiển thị kết quả
+        // Định dạng kết quả làm tròn đến 5 chữ số thập phân
+        const formattedResult = convertedAmount.toFixed(5);
+
+        // Cập nhật kết quả vào thẻ span
+        resultElement.textContent = `${formattedResult} ${to}`;
+
+        console.log(`Chuyển đổi: ${amount} ${from} -> ${convertedAmount} ${to}`);
+    }
+
+    // Gọi hàm convert lần đầu khi tải trang để có kết quả mặc định
+    document.addEventListener('DOMContentLoaded', convertCurrency);
+</script>
+
+</body>
+</html>
